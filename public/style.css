@@ -611,6 +611,28 @@ body {
   border-color: var(--gray-300);
 }
 
+.task-badge-calendar {
+  font-size: 10px;
+  font-weight: 700;
+  color: #fff;
+  background: var(--accent);
+  padding: 2px 8px;
+  border-radius: 10px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.task-item.from-calendar {
+  border-color: var(--accent);
+  background: #f8faff;
+}
+
+.task-count {
+  font-size: 12px;
+  color: var(--gray-400);
+  font-weight: 400;
+}
+
 .task-name {
   flex: 1;
   font-size: 14px;

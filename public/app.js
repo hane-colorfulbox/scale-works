@@ -118,6 +118,7 @@ function connectGoogle() {
     if (event.data.type === "google-auth-success") {
       window.removeEventListener("message", handler);
       state.googleData = event.data.data;
+      applyCalendarData();
       markCalendarConnected("前月分のデータを取得しました");
     }
 
@@ -158,7 +159,38 @@ function initTasks() {
     name: t.name,
     hours: t.hours,
     enabled: true,
+    source: "default",
   }));
+}
+
+function applyCalendarData() {
+  if (!state.googleData || !state.googleData.calendar) return;
+
+  const categories = state.googleData.calendar.categories || {};
+  const calendarTasks = [];
+
+  for (const [category, data] of Object.entries(categories)) {
+    const hours = Math.round(data.minutes / 60);
+    if (hours > 0) {
+      calendarTasks.push({
+        name: category,
+        hours: hours,
+        enabled: true,
+        source: "calendar",
+        count: data.count,
+      });
+    }
+  }
+
+  // カレンダータスクを先頭に、デフォルトタスクを後ろに
+  const defaultTasks = DEFAULT_TASKS.map((t) => ({
+    name: t.name,
+    hours: t.hours,
+    enabled: true,
+    source: "default",
+  }));
+
+  state.tasks = [...calendarTasks, ...defaultTasks];
 }
 
 /* --- Step 3: Task List --- */
@@ -173,10 +205,15 @@ function renderTaskList() {
 
 function createTaskItemHTML(task, index) {
   const checkSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20,6 9,17 4,12"/></svg>`;
+  const badge = task.source === "calendar"
+    ? `<span class="task-badge-calendar">カレンダー</span>`
+    : "";
+  const countInfo = task.count ? ` <span class="task-count">(${task.count}件)</span>` : "";
   return `
-    <div class="task-item ${task.enabled ? "" : "disabled"}" data-index="${index}">
+    <div class="task-item ${task.enabled ? "" : "disabled"} ${task.source === "calendar" ? "from-calendar" : ""}" data-index="${index}">
       <div class="task-check" onclick="toggleTask(${index})">${checkSvg}</div>
-      <span class="task-name">${escapeHTML(task.name)}</span>
+      ${badge}
+      <span class="task-name">${escapeHTML(task.name)}${countInfo}</span>
       <input type="number" class="task-hours-input" value="${task.hours}" min="0" max="200"
              data-index="${index}" ${task.enabled ? "" : "disabled"}>
       <span class="task-unit">h/月</span>
