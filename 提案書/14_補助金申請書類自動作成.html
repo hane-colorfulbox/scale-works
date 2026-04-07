@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Scale Works - IT導入補助金 申請書類自動作成</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .case-box { border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; margin-bottom: 20px; }
+  .case-label { background: #1a2b5f; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 12px; }
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 16px 0; }
+  .compare-before { background: #f8f8f8; border-radius: 8px; padding: 16px; }
+  .compare-after { background: #f0f9f0; border-radius: 8px; padding: 16px; }
+  .compare-label { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .compare-after .compare-label { color: #10b981; }
+  .compare-text { font-size: 14px; color: #333; line-height: 1.7; }
+  .flow-detail { background: #f8f8f8; border-radius: 8px; padding: 20px; margin: 16px 0; }
+  .flow-step-detail { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; }
+  .flow-step-num { background: #1a2b5f; color: #fff; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
+  .flow-step-text { font-size: 13px; color: #333; }
+  .flow-step-text strong { color: #1a2b5f; }
+  .flow-divider { color: #ccc; font-size: 14px; padding-left: 7px; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="header">
+    <div class="label">Scale Works / Proposal</div>
+    <h1>IT導入補助金<br>申請書類の自動作成サービス</h1>
+    <div class="subtitle">ヒアリングシートと添付資料を渡すだけ。申請書類がAIで自動完成</div>
+    <div class="meta">カラフルボックス株式会社 | 2026年4月</div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">課題</div>
+    <div class="problems">
+      <div class="problem">
+        <h3>申請書類の作成に時間がかかりすぎる</h3>
+        <p>1社あたり4〜6時間。登記簿・決算書・給与データからの転記作業が膨大</p>
+      </div>
+      <div class="problem">
+        <h3>手入力によるミスが発生する</h3>
+        <p>金額の転記ミス、セルの入力漏れ、計算式の誤りが起きやすい</p>
+      </div>
+      <div class="problem">
+        <h3>給与支給総額の計算が複雑</h3>
+        <p>FTE換算、役員報酬の除外、パート比率など、ルールが細かく間違いやすい</p>
+      </div>
+      <div class="problem">
+        <h3>申請件数が増えると回らない</h3>
+        <p>繁忙期に案件が集中し、対応できる件数に限界がある</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">当社の実績</div>
+    <div class="case-box">
+      <span class="case-label">稼働中</span>
+      <p style="font-size: 15px; font-weight: 700; color: #111; margin-bottom: 12px;">自社の補助金申請業務で実際に運用しているツールです</p>
+      <div class="compare">
+        <div class="compare-before">
+          <div class="compare-label">導入前</div>
+          <div class="compare-text">
+            <strong>1社あたり4〜6時間</strong><br>
+            Excel手入力・PDF目視確認・電卓で計算
+          </div>
+        </div>
+        <div class="compare-after">
+          <div class="compare-label">導入後</div>
+          <div class="compare-text">
+            <strong>1社あたり約20分</strong><br>
+            AI自動読取・自動転記・確認のみ
+          </div>
+        </div>
+      </div>
+      <div class="tags">
+        <span class="tag tag-green">作業時間90%削減</span>
+        <span class="tag tag-blue">通常枠・インボイス枠に対応</span>
+        <span class="tag tag-yellow">複数社で稼働済み</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">自動化される作業</div>
+    <ul class="includes">
+      <li>履歴事項全部証明書（PDF）からの法人情報読取・転記</li>
+      <li>損益計算書（PDF）からの財務数値読取・生産性指標計算シートへの転記</li>
+      <li>納税証明書（PDF）からの納税額読取・転記</li>
+      <li>ヒアリングシート（Excel）からの申請内容転記</li>
+      <li>見積書（Excel）からの申請金額転記</li>
+      <li>給与支給控除一覧（PDF）からの従業員別データ読取</li>
+      <li>給与支給総額の自動計算（FTE換算・役員報酬除外）</li>
+      <li>賃上げ計画シミュレーション（年率1.5%増の3年計画）</li>
+      <li>業種コード・経営状況の自動判定</li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <div class="section-label">処理の流れ</div>
+    <div class="flow-detail">
+      <div class="flow-step-detail">
+        <div class="flow-step-num">1</div>
+        <div class="flow-step-text"><strong>資料をフォルダに格納</strong><br>ヒアリングシート・登記簿・決算書・給与データを所定フォルダに入れる</div>
+      </div>
+      <div class="flow-divider">|</div>
+      <div class="flow-step-detail">
+        <div class="flow-step-num">2</div>
+        <div class="flow-step-text"><strong>AIが全資料を自動読取</strong><br>Claude APIがPDF・Excelから必要な情報を構造化データとして抽出</div>
+      </div>
+      <div class="flow-divider">|</div>
+      <div class="flow-step-detail">
+        <div class="flow-step-num">3</div>
+        <div class="flow-step-text"><strong>申請書テンプレートに自動転記</strong><br>抽出データをExcelテンプレートの各セルに自動入力。計算シートも自動生成</div>
+      </div>
+      <div class="flow-divider">|</div>
+      <div class="flow-step-detail">
+        <div class="flow-step-num">4</div>
+        <div class="flow-step-text"><strong>担当者が確認・微修正</strong><br>空欄箇所（フリガナ・アンケート等）のみ手入力。完成ファイルをそのまま申請に使用</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-label">導入効果</div>
+    <div class="roi-box">
+      <div class="roi-title">月10社の申請書類を作成している場合（1社5時間 × 時給2,500円）</div>
+      <div class="roi-grid">
+        <div class="roi-item">
+          <div class="roi-label">現在の工数</div>
+          <div class="roi-value">50<span class="roi-unit">h/月</span></div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">導入後</div>
+          <div class="roi-value green">5<span class="roi-unit">h/月</span></div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">月間削減額</div>
+          <div class="roi-value green">&yen;112,500</div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">投資回収</div>
+          <div class="roi-value">1.8<span class="roi-unit">ヶ月</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">※ 対応件数が増えるほどROIが向上します。月20社なら投資回収は1ヶ月未満</p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">価格</div>
+    <div class="price-box">
+      <div class="price-label">一括納品</div>
+      <div class="price-value">&yen;198,000<span class="price-unit">（税込）</span></div>
+      <div class="price-note">ツール構築・テンプレート対応・操作マニュアル・3ヶ月サポート込み</div>
+    </div>
+    <p class="note">
+      ※ 通常枠・インボイス枠の両方に対応<br>
+      ※ 年度ごとのテンプレート更新対応は月次保守プラン（&yen;98,000/月）にて提供<br>
+      ※ API利用料は別途（1社あたり約40円。月100社でも約4,000円）
+    </p>
+  </div>
+
+  <div class="section">
+    <div class="section-label">技術構成</div>
+    <div style="background: #f8f8f8; border-radius: 8px; padding: 20px; font-size: 13px; color: #555; line-height: 2;">
+      <strong style="color: #1a2b5f;">AI読取:</strong> Claude API（Sonnet）によるPDF画像解析・構造化データ抽出<br>
+      <strong style="color: #1a2b5f;">Excel操作:</strong> Python + openpyxl によるテンプレート自動転記<br>
+      <strong style="color: #1a2b5f;">将来拡張:</strong> Google Drive連携による完全自動化（資料格納→自動実行→完成通知）
+    </div>
+  </div>
+
+  <div class="footer">
+    <span>Scale Works by カラフルボックス株式会社</span>
+    <span>2026年4月</span>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Scale Works - 業務自動化・BPOサービスのご提案</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Hiragino Sans', 'Noto Sans JP', 'Meiryo', sans-serif; background: #fff; color: #1a1a1a; font-size: 15px; line-height: 1.7; }
+
+  .page { max-width: 800px; margin: 0 auto; padding: 60px 48px; }
+  .page-break { page-break-before: always; padding-top: 60px; }
+
+  /* ヘッダー */
+  .header { margin-bottom: 56px; }
+  .header .label { font-size: 12px; color: #888; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 12px; }
+  .header h1 { font-size: 26px; font-weight: 700; color: #111; line-height: 1.4; margin-bottom: 8px; }
+  .header .subtitle { font-size: 15px; color: #555; margin-bottom: 16px; }
+  .header .meta { font-size: 13px; color: #aaa; }
+
+  /* セクション */
+  .section { margin-bottom: 48px; }
+  .section-label { font-size: 11px; color: #888; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 20px; padding-bottom: 8px; border-bottom: 1px solid #e8e8e8; }
+
+  /* 課題カード */
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .problem-card { background: #f8f8f8; border-radius: 8px; padding: 20px; }
+  .problem-card .num { font-size: 24px; font-weight: 800; color: #1a2b5f; margin-bottom: 8px; }
+  .problem-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .problem-card p { font-size: 12px; color: #666; line-height: 1.6; }
+
+  /* フロー */
+  .flow { display: flex; align-items: center; justify-content: center; gap: 0; margin: 24px 0; flex-wrap: wrap; }
+  .flow-item { background: #f8f8f8; border-radius: 8px; padding: 14px 18px; text-align: center; flex: 1; min-width: 140px; }
+  .flow-item .flow-num { font-size: 10px; color: #888; margin-bottom: 2px; }
+  .flow-item .flow-text { font-size: 13px; font-weight: 600; color: #1a2b5f; }
+  .flow-item .flow-sub { font-size: 11px; color: #888; margin-top: 2px; }
+  .flow-arrow { font-size: 18px; color: #ccc; padding: 0 4px; flex-shrink: 0; }
+
+  /* サービスカード */
+  .service-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .service-card { border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; }
+  .service-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 6px; color: #1a2b5f; }
+  .service-card .price { font-size: 20px; font-weight: 800; color: #1a2b5f; margin-bottom: 8px; }
+  .service-card .price-unit { font-size: 12px; font-weight: 400; color: #888; }
+  .service-card ul { list-style: none; padding: 0; }
+  .service-card li { font-size: 12px; color: #555; padding: 3px 0; padding-left: 16px; position: relative; }
+  .service-card li::before { content: ""; position: absolute; left: 0; top: 10px; width: 6px; height: 6px; background: #3b82f6; border-radius: 50%; }
+
+  /* メニュー一覧 */
+  .menu-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .menu-table th { text-align: left; padding: 10px 14px; background: #1a2b5f; color: #fff; font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+  .menu-table td { padding: 11px 14px; border-bottom: 1px solid #f0f0f0; }
+  .menu-table tr:last-child td { border-bottom: none; }
+  .menu-table .cat { font-size: 11px; color: #3b82f6; font-weight: 600; }
+  .menu-price { font-weight: 700; color: #1a2b5f; white-space: nowrap; }
+
+  /* ROIボックス */
+  .roi-box { background: #f0f4ff; border-radius: 10px; padding: 28px; margin: 24px 0; }
+  .roi-title { font-size: 13px; font-weight: 700; color: #1a2b5f; margin-bottom: 16px; }
+  .roi-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; text-align: center; }
+  .roi-item .roi-label { font-size: 10px; color: #666; margin-bottom: 4px; }
+  .roi-item .roi-value { font-size: 22px; font-weight: 800; color: #1a2b5f; }
+  .roi-item .roi-value.green { color: #10b981; }
+  .roi-item .roi-unit { font-size: 11px; font-weight: 400; }
+
+  /* パッケージ */
+  .package-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  .package { border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; text-align: center; position: relative; }
+  .package.recommended { border-color: #3b82f6; border-width: 2px; }
+  .package .badge { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: #3b82f6; color: #fff; font-size: 10px; font-weight: 700; padding: 3px 12px; border-radius: 10px; white-space: nowrap; }
+  .package h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; color: #1a2b5f; }
+  .package .pkg-price { font-size: 24px; font-weight: 800; color: #1a2b5f; margin: 12px 0; }
+  .package .pkg-price .yen { font-size: 14px; }
+  .package .pkg-price .tax { font-size: 11px; font-weight: 400; color: #888; }
+  .package ul { list-style: none; text-align: left; padding: 0; margin-top: 12px; }
+  .package li { font-size: 11px; color: #555; padding: 3px 0 3px 14px; position: relative; }
+  .package li::before { content: ""; position: absolute; left: 0; top: 9px; width: 5px; height: 5px; background: #3b82f6; border-radius: 50%; }
+
+  /* ステップ */
+  .steps { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; }
+  .step { text-align: center; }
+  .step-num { background: #1a2b5f; color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 700; margin: 0 auto 8px; }
+  .step h4 { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .step p { font-size: 11px; color: #888; }
+
+  /* フッター */
+  .footer { margin-top: 56px; padding-top: 20px; border-top: 1px solid #e8e8e8; display: flex; justify-content: space-between; align-items: center; }
+  .footer .company { font-size: 13px; color: #888; }
+
+  /* タグ */
+  .tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .tag { font-size: 11px; padding: 4px 10px; border-radius: 20px; }
+  .tag-blue { background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; }
+  .tag-green { background: #f0f9f0; color: #16a34a; border: 1px solid #bbf7d0; }
+  .tag-yellow { background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; }
+
+  /* 注釈 */
+  .note { font-size: 12px; color: #888; margin-top: 12px; line-height: 1.6; }
+
+  @media print {
+    body { font-size: 13px; }
+    .page { padding: 40px 36px; }
+    .page-break { page-break-before: always; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== ページ1: 表紙 + 課題 + フロー ===== -->
+<div class="page">
+
+  <div class="header">
+    <div class="label">Scale Works / Service Proposal</div>
+    <h1>AI業務自動化・BPOサービス<br>Scale Works のご提案</h1>
+    <div class="subtitle">業務時間を削減し、本業に集中できる環境をつくる</div>
+    <div class="meta">カラフルボックス株式会社 | 2026年4月</div>
+  </div>
+
+  <!-- 課題 -->
+  <div class="section">
+    <div class="section-label">中小企業が抱える3つの課題</div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="num">01</div>
+        <h3>繰り返し業務に時間を取られる</h3>
+        <p>請求書、報告書、メール対応など、毎月同じ作業に人手が割かれている</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">02</div>
+        <h3>自動化したいが何から始めるかわからない</h3>
+        <p>AIやツールの情報は多いが、自社に合った優先順位が見えない</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">03</div>
+        <h3>外注するほどの予算がない</h3>
+        <p>大手SIerに頼むと数百万円。中小企業の規模感に合わない</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scale Worksとは -->
+  <div class="section">
+    <div class="section-label">Scale Works とは</div>
+    <p style="font-size: 15px; color: #333; margin-bottom: 20px;">
+      <strong>Scale Works</strong>は、AIを活用した業務自動化とBPO（業務代行）を中小企業向けに提供するサービスです。<br>
+      無料の業務分析から始まり、ROI（投資回収）が見える形で自動化・効率化を進めます。
+    </p>
+    <div class="flow">
+      <div class="flow-item">
+        <div class="flow-num">STEP 1</div>
+        <div class="flow-text">無料業務分析</div>
+        <div class="flow-sub">現状の業務を可視化</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">
+        <div class="flow-num">STEP 2</div>
+        <div class="flow-text">レポート説明会</div>
+        <div class="flow-sub">ROI・優先順位を解説</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">
+        <div class="flow-num">STEP 3</div>
+        <div class="flow-text">自動化・BPO導入</div>
+        <div class="flow-sub">最もROIが高いものから</div>
+      </div>
+      <div class="flow-arrow">&rarr;</div>
+      <div class="flow-item">
+        <div class="flow-num">STEP 4</div>
+        <div class="flow-text">継続改善</div>
+        <div class="flow-sub">月次で効果を検証</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROI例 -->
+  <div class="section">
+    <div class="section-label">導入効果の目安</div>
+    <div class="roi-box">
+      <div class="roi-title">事務員1名分の業務を自動化した場合（時給2,000円 / 月80時間削減）</div>
+      <div class="roi-grid">
+        <div class="roi-item">
+          <div class="roi-label">月間削減時間</div>
+          <div class="roi-value">80<span class="roi-unit">時間</span></div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">月間削減コスト</div>
+          <div class="roi-value green">&yen;160,000</div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">年間削減コスト</div>
+          <div class="roi-value green">&yen;1,920,000</div>
+        </div>
+        <div class="roi-item">
+          <div class="roi-label">投資回収期間</div>
+          <div class="roi-value">3<span class="roi-unit">ヶ月</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="note">※ 削減時間は業務内容により異なります。無料業務分析で具体的な数値を算出いたします。</p>
+  </div>
+
+  <!-- 導入事例 -->
+  <div class="section">
+    <div class="section-label">当社での導入事例</div>
+
+    <!-- 事例1: 補助金 -->
+    <div style="border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="background: #1a2b5f; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;">CASE 1</span>
+        <span style="font-size: 17px; font-weight: 700; color: #111;">IT導入補助金 申請書類の自動作成</span>
+      </div>
+      <p style="font-size: 13px; color: #555; margin-bottom: 16px;">
+        ヒアリングシート・登記簿・決算書・給与データをAIが自動で読み取り、申請書テンプレートに転記。<br>
+        給与支給総額の計算・賃上げ計画シミュレーションまで自動生成。
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+        <div style="background: #f8f8f8; border-radius: 8px; padding: 14px;">
+          <div style="font-size: 11px; color: #888; margin-bottom: 4px;">導入前</div>
+          <div style="font-size: 14px; color: #333;"><strong>1社あたり4〜6時間</strong>の手作業<br>Excel転記・計算・確認を人手で実施</div>
+        </div>
+        <div style="background: #f0f9f0; border-radius: 8px; padding: 14px;">
+          <div style="font-size: 11px; color: #10b981; margin-bottom: 4px;">導入後</div>
+          <div style="font-size: 14px; color: #333;"><strong>1社あたり20分</strong>で完了<br>AI読取→自動転記→確認のみ</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #f0f9f0; color: #16a34a; border: 1px solid #bbf7d0;">作業時間90%削減</span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">Claude API + openpyxl</span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #fefce8; color: #ca8a04; border: 1px solid #fef08a;">複数社で稼働中</span>
+      </div>
+    </div>
+
+    <!-- 事例2: SNS -->
+    <div style="border: 1px solid #e8e8e8; border-radius: 10px; padding: 24px;">
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 14px;">
+        <span style="background: #1a2b5f; color: #fff; font-size: 11px; font-weight: 700; padding: 4px 12px; border-radius: 20px;">CASE 2</span>
+        <span style="font-size: 17px; font-weight: 700; color: #111;">X（旧Twitter）投稿の自動生成・運用</span>
+      </div>
+      <p style="font-size: 13px; color: #555; margin-bottom: 16px;">
+        業種・ターゲットに合わせた投稿をAIが自動生成。1週間分の投稿を一括作成し、予約投稿まで自動化。<br>
+        投稿ネタ出し・文面作成・ハッシュタグ選定にかかっていた時間をほぼゼロに。
+      </p>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+        <div style="background: #f8f8f8; border-radius: 8px; padding: 14px;">
+          <div style="font-size: 11px; color: #888; margin-bottom: 4px;">導入前</div>
+          <div style="font-size: 14px; color: #333;"><strong>1投稿30分 × 月20回 = 10時間</strong><br>ネタ出し・文面・画像選定を手動</div>
+        </div>
+        <div style="background: #f0f9f0; border-radius: 8px; padding: 14px;">
+          <div style="font-size: 11px; color: #10b981; margin-bottom: 4px;">導入後</div>
+          <div style="font-size: 14px; color: #333;"><strong>週1回15分の確認のみ</strong><br>AI生成→確認→予約投稿を自動化</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #f0f9f0; color: #16a34a; border: 1px solid #bbf7d0;">運用工数90%削減</span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">投稿頻度が安定</span>
+        <span style="font-size: 11px; padding: 4px 10px; border-radius: 20px; background: #fefce8; color: #ca8a04; border: 1px solid #fef08a;">¥98,000で導入可能</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ===== ページ2: サービスメニュー ===== -->
+<div class="page page-break">
+
+  <div class="section">
+    <div class="section-label">サービスメニュー</div>
+
+    <!-- 自動化構築 -->
+    <h3 style="font-size: 14px; font-weight: 700; color: #1a2b5f; margin-bottom: 12px;">自動化構築（一括納品）</h3>
+    <table class="menu-table">
+      <tr>
+        <th style="width: 45%;">サービス</th>
+        <th style="width: 30%;">内容</th>
+        <th style="width: 25%;">価格（税込）</th>
+      </tr>
+      <tr>
+        <td>X投稿自動化</td>
+        <td>投稿の自動生成・予約投稿</td>
+        <td class="menu-price">&yen;98,000</td>
+      </tr>
+      <tr>
+        <td>請求書作成自動化</td>
+        <td>データから請求書PDF生成・送付</td>
+        <td class="menu-price">&yen;148,000</td>
+      </tr>
+      <tr>
+        <td>フォームマーケティング自動化</td>
+        <td>問い合わせフォームへの自動アプローチ</td>
+        <td class="menu-price">&yen;148,000</td>
+      </tr>
+      <tr>
+        <td>ホームページAIO最適化</td>
+        <td>AI検索に最適化したサイト構造・メタ設計</td>
+        <td class="menu-price">&yen;198,000</td>
+      </tr>
+      <tr>
+        <td>広告出稿分析自動化</td>
+        <td>広告データ収集・レポート自動生成</td>
+        <td class="menu-price">&yen;198,000</td>
+      </tr>
+      <tr>
+        <td>問い合わせ対応自動化</td>
+        <td>AIによる自動分類・回答ドラフト生成</td>
+        <td class="menu-price">&yen;248,000</td>
+      </tr>
+    </table>
+
+    <!-- BPO月次 -->
+    <h3 style="font-size: 14px; font-weight: 700; color: #1a2b5f; margin: 28px 0 12px;">BPO代行（月額継続）</h3>
+    <table class="menu-table">
+      <tr>
+        <th style="width: 45%;">サービス</th>
+        <th style="width: 30%;">内容</th>
+        <th style="width: 25%;">月額（税込）</th>
+      </tr>
+      <tr>
+        <td>月次会議議事録分析・BPO提案</td>
+        <td>議事録から改善提案を自動生成</td>
+        <td class="menu-price">&yen;50,000/月</td>
+      </tr>
+      <tr>
+        <td>提案書作成BPO</td>
+        <td>ヒアリング内容から提案書を作成</td>
+        <td class="menu-price">&yen;60,000/月</td>
+      </tr>
+      <tr>
+        <td>社内マニュアル作成BPO</td>
+        <td>業務マニュアルの取材・執筆・校正</td>
+        <td class="menu-price">&yen;60,000/月</td>
+      </tr>
+      <tr>
+        <td>業務分析レポート</td>
+        <td>データ収集・分析・自動化提案レポート</td>
+        <td class="menu-price">&yen;60,000/月</td>
+      </tr>
+      <tr>
+        <td>Claude Code 月次伴走支援</td>
+        <td>MTG・コードレビュー・質問対応</td>
+        <td class="menu-price">&yen;80,000/月</td>
+      </tr>
+    </table>
+
+    <!-- 研修 -->
+    <h3 style="font-size: 14px; font-weight: 700; color: #1a2b5f; margin: 28px 0 12px;">研修</h3>
+    <table class="menu-table">
+      <tr>
+        <th style="width: 45%;">サービス</th>
+        <th style="width: 30%;">内容</th>
+        <th style="width: 25%;">価格（税込）</th>
+      </tr>
+      <tr>
+        <td>Claude Code 導入研修 基礎編</td>
+        <td>基本操作・業務活用の基礎</td>
+        <td class="menu-price">&yen;98,000</td>
+      </tr>
+      <tr>
+        <td>Claude Code 導入研修 応用編</td>
+        <td>自動化・API連携・実践演習</td>
+        <td class="menu-price">&yen;148,000</td>
+      </tr>
+      <tr>
+        <td>基礎 + 応用セット</td>
+        <td>2日間集中プログラム</td>
+        <td class="menu-price">&yen;218,000</td>
+      </tr>
+    </table>
+    <p class="note">※ 研修は1社あたりの料金です。5名以上は1名追加ごとに+&yen;10,000</p>
+  </div>
+
+</div>
+
+<!-- ===== ページ3: パッケージ + 進め方 ===== -->
+<div class="page page-break">
+
+  <!-- パッケージ -->
+  <div class="section">
+    <div class="section-label">パッケージプラン</div>
+    <div class="package-grid">
+      <div class="package">
+        <h4>スターター</h4>
+        <div class="pkg-price"><span class="yen">&yen;</span>298,000<br><span class="tax">税込</span></div>
+        <ul>
+          <li>研修 基礎編</li>
+          <li>自動化ツール1本</li>
+          <li>まず試してみたい方に</li>
+        </ul>
+      </div>
+      <div class="package recommended">
+        <div class="badge">おすすめ</div>
+        <h4>スタンダード</h4>
+        <div class="pkg-price"><span class="yen">&yen;</span>598,000<br><span class="tax">税込</span></div>
+        <ul>
+          <li>研修 基礎 + 応用編</li>
+          <li>自動化ツール2本</li>
+          <li>月次伴走支援 3ヶ月</li>
+          <li>本格的に業務改善したい方に</li>
+        </ul>
+      </div>
+      <div class="package">
+        <h4>フルDX</h4>
+        <div class="pkg-price"><span class="yen">&yen;</span>1,280,000<br><span class="tax">税込</span></div>
+        <ul>
+          <li>業務診断</li>
+          <li>自動化ツール4本</li>
+          <li>BPO月次2種</li>
+          <li>伴走支援 6ヶ月</li>
+          <li>全社的にDXを推進したい方に</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 士業向け -->
+  <div class="section">
+    <div class="section-label">社労士・税理士向けメニュー</div>
+    <div class="service-grid">
+      <div class="service-card">
+        <h3>給与明細自動生成</h3>
+        <div class="price">&yen;148,000</div>
+        <ul>
+          <li>勤怠データから明細PDF自動作成</li>
+          <li>メール配信まで自動化</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>顧問先月次レポート自動化</h3>
+        <div class="price">&yen;198,000</div>
+        <ul>
+          <li>各顧問先データから報告書を自動生成</li>
+          <li>送付まで一括処理</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>申請書類・申告書ドラフト自動化</h3>
+        <div class="price">&yen;198,000〜</div>
+        <ul>
+          <li>ヒアリング内容からドラフト自動生成</li>
+          <li>先生の確認・修正のみで完了</li>
+        </ul>
+      </div>
+      <div class="service-card">
+        <h3>相談メール回答ドラフトBPO</h3>
+        <div class="price">&yen;60,000<span class="price-unit">/月</span></div>
+        <ul>
+          <li>顧問先からの相談に回答ドラフトを生成</li>
+          <li>対応時間を70%削減</li>
+        </ul>
+      </div>
+    </div>
+    <p class="note">※ 先生の時間単価（&yen;5,000〜&yen;10,000）で換算すると、ROIはオフィスワークの2〜4倍になります。</p>
+  </div>
+
+  <!-- 進め方 -->
+  <div class="section">
+    <div class="section-label">導入の進め方</div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <h4>無料業務分析</h4>
+        <p>Webツールで<br>業務を可視化</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <h4>レポート説明会</h4>
+        <p>30分・無料<br>ROIと優先順位を解説</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <h4>導入・構築</h4>
+        <p>最もROIが高い<br>施策から着手</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <h4>継続改善</h4>
+        <p>月次MTGで<br>効果検証・追加提案</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- フッター -->
+  <div class="footer">
+    <div class="company">Scale Works by カラフルボックス株式会社</div>
+    <div class="company">2026年4月</div>
+  </div>
+
+</div>
+
+</body>
+</html>

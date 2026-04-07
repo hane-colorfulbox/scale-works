@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scale Works - 無料業務分析ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- ヘッダー -->
+    <header class="header">
+      <div class="header-inner">
+        <div class="logo">
+          <span class="logo-mark">S</span>
+          <span class="logo-text">Scale Works</span>
+        </div>
+        <span class="header-label">無料業務分析ツール</span>
+      </div>
+    </header>
+
+    <!-- プログレスバー -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-steps" id="progressSteps"></div>
+    </div>
+
+    <!-- メインコンテンツ -->
+    <main class="main">
+      <!-- Step 1: 時給入力（任意） -->
+      <section class="step" id="step1" data-step="1">
+        <h2 class="step-title">時給を入力してください</h2>
+        <p class="step-desc">削減コストの計算に使用します（任意）</p>
+        <div class="form-group">
+          <label class="form-label">時給（円）</label>
+          <div class="slider-group">
+            <input type="range" id="hourlyRate" class="form-slider"
+                   min="1000" max="5000" step="100" value="2500">
+            <div class="slider-value" id="hourlyRateValue">2,500円</div>
+          </div>
+          <div class="slider-range">
+            <span>1,000円</span>
+            <span>5,000円</span>
+          </div>
+        </div>
+        <div class="nav-buttons">
+          <button class="btn btn-next" onclick="nextStep()">次へ</button>
+          <button class="btn btn-skip" onclick="skipHourlyRate()">スキップ（デフォルト: 2,500円）</button>
+        </div>
+      </section>
+
+      <!-- Step 2: Googleカレンダー連携 -->
+      <section class="step hidden" id="step2" data-step="2">
+        <h2 class="step-title">Googleカレンダーを連携します</h2>
+        <p class="step-desc">前月の予定から業務内容を自動で取得します</p>
+        <div class="connect-cards">
+          <div class="connect-card" id="calendarConnect">
+            <div class="connect-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="4" width="18" height="18" rx="2"/>
+                <line x1="3" y1="10" x2="21" y2="10"/>
+                <line x1="16" y1="2" x2="16" y2="6"/>
+                <line x1="8" y1="2" x2="8" y2="6"/>
+              </svg>
+            </div>
+            <div class="connect-info">
+              <span class="connect-name">Google カレンダー</span>
+              <span class="connect-desc" id="calendarDesc">前月分の予定から業務を分析します</span>
+            </div>
+            <button class="btn btn-connect" id="calendarBtn" onclick="connectGoogle()">連携する</button>
+          </div>
+        </div>
+        <div class="connect-note">
+          <p>※ 連携しない場合はサンプルデータで分析します</p>
+        </div>
+        <div class="nav-buttons">
+          <button class="btn btn-back" onclick="prevStep()">戻る</button>
+          <button class="btn btn-next" onclick="nextStep()">次へ</button>
+        </div>
+      </section>
+
+      <!-- Step 3: 業務確認・修正 -->
+      <section class="step hidden" id="step3" data-step="3">
+        <h2 class="step-title">業務内容を確認・修正してください</h2>
+        <p class="step-desc">各業務にかかっている月間時間を調整できます</p>
+        <div class="task-list" id="taskList"></div>
+        <button class="btn btn-add-task" onclick="addCustomTask()">+ 業務を追加</button>
+        <div class="task-summary">
+          <div class="summary-row">
+            <span>登録業務の合計時間</span>
+            <span id="taskTotalHours" class="summary-value">--</span>
+          </div>
+        </div>
+        <div class="nav-buttons">
+          <button class="btn btn-back" onclick="prevStep()">戻る</button>
+          <button class="btn btn-next" onclick="nextStep()">分析結果を見る</button>
+        </div>
+      </section>
+
+      <!-- Step 4: 分析結果 + 詳しく聞く -->
+      <section class="step hidden" id="step4" data-step="4">
+        <h2 class="step-title">分析結果</h2>
+        <p class="step-desc">あなたの業務の削減ポテンシャルです</p>
+        <div class="preview-section">
+          <div class="roi-summary" id="roiSummary"></div>
+          <div class="proposal-cards" id="proposalCards"></div>
+        </div>
+        <div class="cta-section">
+          <p class="cta-text">具体的な導入方法や費用について、30分の無料面談でご説明します</p>
+          <a href="" id="bookingLink" class="btn btn-cta" target="_blank" rel="noopener">
+            詳しく聞く（無料面談を予約）
+          </a>
+        </div>
+        <div class="cta-footer">
+          <p class="cta-brand">Scale Works by カラフルボックス株式会社</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
