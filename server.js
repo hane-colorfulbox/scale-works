@@ -28,6 +28,13 @@ app.use("/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/report", reportRoutes);
 
+// --- 予約リダイレクト ---
+app.get("/booking", (req, res) => {
+  const url = process.env.BOOKING_URL;
+  if (!url) return res.status(404).send("予約リンクが設定されていません");
+  res.redirect(url);
+});
+
 // --- DB初期化 & 起動 ---
 db.init();
 

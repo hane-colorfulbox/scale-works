@@ -264,101 +264,33 @@ function updateTaskTotal() {
 /* --- Step 4: Preview --- */
 function renderPreview() {
   const activeTasks = state.tasks.filter((t) => t.enabled);
-
-  let totalReductionHours = 0;
-  const proposalResults = [];
-
-  PROPOSALS.forEach((proposal) => {
-    const matchTask = activeTasks.find((t) => t.name === proposal.targetTask);
-    const baseHours = matchTask ? matchTask.hours : 10;
-    const reducedHours = Math.round(baseHours * proposal.reductionRate);
-    const monthlySaving = reducedHours * state.hourlyRate;
-    const annualSaving = monthlySaving * 12;
-    const paybackMonths = proposal.priceUnit === "月額"
-      ? (monthlySaving > 0 ? 1 : 0)
-      : (monthlySaving > 0 ? Math.ceil((proposal.price / monthlySaving) * 10) / 10 : 0);
-
-    totalReductionHours += reducedHours;
-
-    proposalResults.push({
-      ...proposal,
-      baseHours,
-      reducedHours,
-      monthlySaving,
-      annualSaving,
-      paybackMonths,
-    });
-  });
-
-  proposalResults.sort((a, b) => b.annualSaving - a.annualSaving);
-
-  const totalMonthlySaving = proposalResults.reduce((s, p) => s + p.monthlySaving, 0);
-  const totalAnnualSaving = totalMonthlySaving * 12;
+  const totalHours = activeTasks.reduce((sum, t) => sum + t.hours, 0);
+  const monthlyCost = totalHours * state.hourlyRate;
+  const annualCost = monthlyCost * 12;
 
   $("roiSummary").innerHTML = `
     <div class="roi-card">
-      <div class="roi-label">月間削減可能時間</div>
-      <div class="roi-value">${totalReductionHours}<span class="roi-unit">時間</span></div>
+      <div class="roi-label">月間業務時間</div>
+      <div class="roi-value">${totalHours}<span class="roi-unit">時間</span></div>
     </div>
     <div class="roi-card">
-      <div class="roi-label">月間削減コスト</div>
-      <div class="roi-value highlight">¥${formatCurrency(totalMonthlySaving)}</div>
+      <div class="roi-label">月間コスト</div>
+      <div class="roi-value highlight">¥${formatCurrency(monthlyCost)}</div>
     </div>
     <div class="roi-card">
-      <div class="roi-label">年間削減コスト</div>
-      <div class="roi-value highlight">¥${formatCurrency(totalAnnualSaving)}</div>
+      <div class="roi-label">年間コスト</div>
+      <div class="roi-value highlight">¥${formatCurrency(annualCost)}</div>
     </div>
   `;
 
-  $("proposalCards").innerHTML = proposalResults
-    .slice(0, 5)
-    .map((p, i) => {
-      const priceLabel = p.priceUnit === "月額"
-        ? `¥${formatCurrency(p.price)}/月`
-        : `¥${formatCurrency(p.price)}`;
-      const paybackLabel = p.priceUnit === "月額"
-        ? "即月回収"
-        : `${p.paybackMonths}ヶ月`;
-
-      return `
-        <div class="proposal-card">
-          <div class="proposal-header">
-            <span class="proposal-rank">${i + 1}</span>
-            <span class="proposal-name">${p.name}</span>
-          </div>
-          <div class="proposal-metrics">
-            <div class="proposal-metric">
-              <span class="proposal-metric-label">現在コスト</span>
-              <span class="proposal-metric-value">月${p.baseHours}h × ¥${formatCurrency(state.hourlyRate)}</span>
-            </div>
-            <div class="proposal-metric">
-              <span class="proposal-metric-label">削減時間</span>
-              <span class="proposal-metric-value positive">月${p.reducedHours}時間（${Math.round(p.reductionRate * 100)}%削減）</span>
-            </div>
-            <div class="proposal-metric">
-              <span class="proposal-metric-label">月次削減額</span>
-              <span class="proposal-metric-value positive">¥${formatCurrency(p.monthlySaving)}</span>
-            </div>
-            <div class="proposal-metric">
-              <span class="proposal-metric-label">回収期間</span>
-              <span class="proposal-metric-value">${paybackLabel}</span>
-            </div>
-          </div>
-          <div class="proposal-price">
-            <span class="proposal-price-label">${p.description}</span>
-            <span class="proposal-price-value">${priceLabel}</span>
-          </div>
-        </div>
-      `;
-    })
-    .join("");
+  // 提案カードは非表示
+  $("proposalCards").innerHTML = "";
 
   // バックエンドに分析データを送信（非同期・失敗しても問題なし）
   submitAnalysis({
-    totalReductionHours,
-    totalMonthlySaving,
-    totalAnnualSaving,
-    proposals: proposalResults.slice(0, 5),
+    totalHours,
+    monthlyCost,
+    annualCost,
   });
 }
 
