@@ -385,16 +385,33 @@ async function submitEmailAndBook() {
   btn.disabled = true;
   btn.textContent = "送信中...";
 
-  try {
-    if (!state.submissionId) {
-      btn.textContent = "エラー: 分析データがありません";
-      return;
-    }
+  const activeTasks = state.tasks.filter((t) => t.enabled && t.hours > 0);
+  const totalHours = activeTasks.reduce((sum, t) => sum + t.hours, 0);
+  const monthlyCost = totalHours * state.hourlyRate;
+  const annualCost = monthlyCost * 12;
+  const totalSavedHours = activeTasks.reduce((sum, t) => {
+    return sum + Math.round(t.hours * (t.savePct || 50) / 100);
+  }, 0);
+  const monthlySaving = totalSavedHours * state.hourlyRate;
+  const annualSaving = monthlySaving * 12;
 
-    const res = await fetch(`/api/report/${state.submissionId}/send`, {
+  try {
+    const res = await fetch("/api/report/send-direct", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ to: email }),
+      body: JSON.stringify({
+        to: email,
+        hourlyRate: state.hourlyRate,
+        tasks: activeTasks,
+        analysis: {
+          totalHours,
+          monthlyCost,
+          annualCost,
+          totalSavedHours,
+          monthlySaving,
+          annualSaving,
+        },
+      }),
     });
 
     const data = await res.json();

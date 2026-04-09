@@ -76,4 +76,45 @@ router.post("/:id/send", async (req, res) => {
   }
 });
 
+/**
+ * POST /api/report/send-direct
+ * 分析データを直接受け取り、PDF生成→メール送信（DB不要）
+ */
+router.post("/send-direct", async (req, res) => {
+  try {
+    const { to, hourlyRate, tasks, analysis } = req.body;
+    if (!to || !to.includes("@")) {
+      return res.status(400).json({ error: "メールアドレスが不正です" });
+    }
+    if (!tasks || !analysis) {
+      return res.status(400).json({ error: "分析データが不足しています" });
+    }
+
+    // submissionオブジェクトを組み立て（DBなし）
+    const submission = {
+      company_name: null,
+      user_name: null,
+      job_type: "office",
+      hourly_rate: hourlyRate || 2000,
+      tasks_json: JSON.stringify(tasks),
+      analysis_json: JSON.stringify(analysis),
+      created_at: new Date().toLocaleString("ja-JP"),
+    };
+
+    const pdfFilename = `report_direct_${Date.now()}.pdf`;
+    const pdfPath = path.join(__dirname, "..", "reports", pdfFilename);
+
+    await generateReport(submission, pdfPath);
+    await sendReportEmail(to, submission, pdfPath);
+
+    // PDF削除（送信後は不要）
+    fs.unlink(pdfPath, () => {});
+
+    res.json({ success: true, message: "レポートを送信しました" });
+  } catch (err) {
+    console.error("[Report] Send-direct error:", err);
+    res.status(500).json({ error: "レポート送信に失敗しました" });
+  }
+});
+
 module.exports = router;
