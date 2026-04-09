@@ -37,8 +37,8 @@
           <label class="form-label">時給（円）</label>
           <div class="slider-group">
             <input type="range" id="hourlyRate" class="form-slider"
-                   min="1000" max="5000" step="100" value="2500">
-            <div class="slider-value" id="hourlyRateValue">2,500円</div>
+                   min="1000" max="5000" step="100" value="2000">
+            <div class="slider-value" id="hourlyRateValue">2,000円</div>
           </div>
           <div class="slider-range">
             <span>1,000円</span>
@@ -47,7 +47,7 @@
         </div>
         <div class="nav-buttons">
           <button class="btn btn-next" onclick="nextStep()">次へ</button>
-          <button class="btn btn-skip" onclick="skipHourlyRate()">スキップ（デフォルト: 2,500円）</button>
+          <button class="btn btn-skip" onclick="skipHourlyRate()">スキップ（デフォルト: 2,000円）</button>
         </div>
       </section>
 
@@ -105,13 +105,18 @@
         <p class="step-desc">入力された業務の時間×時給から算出したコストです</p>
         <div class="preview-section">
           <div class="roi-summary" id="roiSummary"></div>
-          <div class="proposal-cards" id="proposalCards"></div>
+          <h3 class="breakdown-title">業務別の削減見込み</h3>
+          <div class="breakdown-list" id="breakdownList"></div>
         </div>
-        <div class="cta-section">
+        <div class="cta-section" id="ctaSection">
           <p class="cta-text">具体的な導入方法や費用について、30分の無料面談でご説明します</p>
-          <a href="" id="bookingLink" class="btn btn-cta" target="_blank" rel="noopener">
-            詳しく聞く（無料面談を予約）
-          </a>
+          <p class="cta-sub">メールアドレスを入力すると、分析レポート（PDF）をお送りします</p>
+          <div class="cta-form" id="ctaForm">
+            <input type="email" id="ctaEmail" class="form-input cta-email" placeholder="example@company.co.jp" required>
+            <button class="btn btn-cta" id="ctaSubmitBtn" onclick="submitEmailAndBook()">
+              無料面談予約でレポートを受け取る
+            </button>
+          </div>
         </div>
         <div class="cta-footer">
           <p class="cta-brand">Scale Works by カラフルボックス株式会社</p>

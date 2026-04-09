@@ -9,6 +9,7 @@ const state = {
   googleConnected: false,
   googleData: null,
   tasks: [],
+  submissionId: null,
 };
 
 /* --- Utility --- */
@@ -32,7 +33,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initSlider();
   initTasks();
   updateProgress();
-  $("bookingLink").href = BOOKING_URL;
 });
 
 /* --- Progress Bar --- */
@@ -160,6 +160,7 @@ function initTasks() {
     hours: t.hours,
     enabled: true,
     source: "default",
+    savePct: t.savePct || 50,
   }));
 }
 
@@ -188,6 +189,7 @@ function applyCalendarData() {
     hours: t.hours,
     enabled: true,
     source: "default",
+    savePct: t.savePct || 50,
   }));
 
   state.tasks = [...calendarTasks, ...defaultTasks];
@@ -226,12 +228,19 @@ function attachTaskListeners() {
   document.querySelectorAll(".task-hours-input").forEach((input) => {
     input.addEventListener("change", (e) => {
       const idx = parseInt(e.target.dataset.index);
-      state.tasks[idx].hours = Math.max(0, parseInt(e.target.value) || 0);
+      const val = Math.max(0, parseInt(e.target.value) || 0);
+      state.tasks[idx].hours = val;
+      if (val > 0 && !state.tasks[idx].enabled) {
+        state.tasks[idx].enabled = true;
+        renderTaskList();
+        return;
+      }
       updateTaskTotal();
     });
     input.addEventListener("input", (e) => {
       const idx = parseInt(e.target.dataset.index);
-      state.tasks[idx].hours = Math.max(0, parseInt(e.target.value) || 0);
+      const val = Math.max(0, parseInt(e.target.value) || 0);
+      state.tasks[idx].hours = val;
       updateTaskTotal();
     });
   });
@@ -263,10 +272,17 @@ function updateTaskTotal() {
 
 /* --- Step 4: Preview --- */
 function renderPreview() {
-  const activeTasks = state.tasks.filter((t) => t.enabled);
+  const activeTasks = state.tasks.filter((t) => t.enabled && t.hours > 0);
   const totalHours = activeTasks.reduce((sum, t) => sum + t.hours, 0);
   const monthlyCost = totalHours * state.hourlyRate;
   const annualCost = monthlyCost * 12;
+
+  const totalSavedHours = activeTasks.reduce((sum, t) => {
+    const pct = t.savePct || 50;
+    return sum + Math.round(t.hours * pct / 100);
+  }, 0);
+  const monthlySaving = totalSavedHours * state.hourlyRate;
+  const annualSaving = monthlySaving * 12;
 
   $("roiSummary").innerHTML = `
     <div class="roi-card">
@@ -275,22 +291,51 @@ function renderPreview() {
     </div>
     <div class="roi-card">
       <div class="roi-label">月間コスト</div>
-      <div class="roi-value highlight">¥${formatCurrency(monthlyCost)}</div>
+      <div class="roi-value">¥${formatCurrency(monthlyCost)}</div>
     </div>
     <div class="roi-card">
       <div class="roi-label">年間コスト</div>
-      <div class="roi-value highlight">¥${formatCurrency(annualCost)}</div>
+      <div class="roi-value">¥${formatCurrency(annualCost)}</div>
+    </div>
+    <div class="roi-saving">
+      <div class="roi-saving-item">
+        <span class="roi-saving-label">Scale Works 導入による削減見込み（月間）</span>
+        <span class="roi-saving-value">-${totalSavedHours}時間 / ¥${formatCurrency(monthlySaving)}</span>
+      </div>
+      <div class="roi-saving-item">
+        <span class="roi-saving-label">年間削減見込み</span>
+        <span class="roi-saving-value">¥${formatCurrency(annualSaving)}</span>
+      </div>
     </div>
   `;
 
-  // 提案カードは非表示
-  $("proposalCards").innerHTML = "";
+  $("breakdownList").innerHTML = activeTasks.map((task, i) => {
+    const pct = task.savePct || 50;
+    const savedHours = Math.round(task.hours * pct / 100);
+    const savedCost = savedHours * state.hourlyRate;
+    return `
+      <div class="breakdown-item" style="animation-delay: ${i * 0.08}s">
+        <div class="breakdown-name">${escapeHTML(task.name)}</div>
+        <div class="breakdown-detail">
+          <span class="breakdown-current">${task.hours}h/月</span>
+          <span class="breakdown-arrow">→</span>
+          <span class="breakdown-saved">-${savedHours}h 削減</span>
+          <span class="breakdown-cost">（¥${formatCurrency(savedCost)}）</span>
+        </div>
+        <div class="breakdown-bar-bg">
+          <div class="breakdown-bar-fill" style="width: ${pct}%"></div>
+        </div>
+      </div>
+    `;
+  }).join("");
 
-  // バックエンドに分析データを送信（非同期・失敗しても問題なし）
   submitAnalysis({
     totalHours,
     monthlyCost,
     annualCost,
+    totalSavedHours,
+    monthlySaving,
+    annualSaving,
   });
 }
 
@@ -304,12 +349,58 @@ async function submitAnalysis(analysisResult) {
   };
 
   try {
-    await fetch("/api/analysis/submit", {
+    const res = await fetch("/api/analysis/submit", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
+    const data = await res.json();
+    if (data.id) state.submissionId = data.id;
   } catch (err) {
     // 送信失敗しても問題なし
+  }
+}
+
+/* --- Email + Booking --- */
+async function submitEmailAndBook() {
+  const emailInput = $("ctaEmail");
+  const email = emailInput.value.trim();
+  if (!email || !email.includes("@")) {
+    emailInput.focus();
+    emailInput.style.borderColor = "#ef4444";
+    return;
+  }
+
+  const btn = $("ctaSubmitBtn");
+  btn.disabled = true;
+  btn.textContent = "送信中...";
+
+  try {
+    if (!state.submissionId) {
+      btn.textContent = "エラー: 分析データがありません";
+      return;
+    }
+
+    const res = await fetch(`/api/report/${state.submissionId}/send`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ to: email }),
+    });
+
+    const data = await res.json();
+
+    if (data.success) {
+      btn.textContent = "レポートを送信しました！予約ページへ移動します...";
+      setTimeout(() => {
+        window.open(BOOKING_URL, "_blank");
+      }, 1000);
+    } else {
+      btn.disabled = false;
+      btn.textContent = "無料面談予約でレポートを受け取る";
+      emailInput.style.borderColor = "#ef4444";
+    }
+  } catch (err) {
+    btn.disabled = false;
+    btn.textContent = "無料面談予約でレポートを受け取る";
   }
 }

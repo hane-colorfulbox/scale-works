@@ -96,16 +96,24 @@ async function sendReportEmail(to, submission, pdfPath) {
 
   const transport = createTransport();
 
+  const companyName = submission.company_name || "";
+  const userName = submission.user_name || "";
+  const greeting = userName ? `${userName}様` : "お客様";
+  const subjectName = companyName ? `${companyName}様 ` : "";
+  const fileName = companyName
+    ? `${companyName}_業務分析レポート.pdf`
+    : "業務分析レポート.pdf";
+
   await transport.sendMail({
     from: `"Scale Works" <${process.env.SMTP_USER}>`,
     to,
-    subject: `【Scale Works】${submission.company_name}様 業務分析レポート`,
-    text: `${submission.user_name}様
+    subject: `【Scale Works】${subjectName}業務分析レポート`,
+    text: `${greeting}
 
 Scale Worksをご利用いただきありがとうございます。
 業務分析レポートを添付いたします。
 
-詳細はオンライン説明会にてご説明させていただきます。
+詳細は無料面談にてご説明させていただきます。
 ご不明点がございましたらお気軽にお問い合わせください。
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -113,7 +121,7 @@ Scale Works by カラフルボックス株式会社
 ━━━━━━━━━━━━━━━━━━━━━━━━`,
     attachments: [
       {
-        filename: `${submission.company_name}_業務分析レポート.pdf`,
+        filename: fileName,
         path: pdfPath,
       },
     ],

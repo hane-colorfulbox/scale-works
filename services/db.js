@@ -18,9 +18,9 @@ function init() {
   conn.exec(`
     CREATE TABLE IF NOT EXISTS submissions (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
-      company_name TEXT NOT NULL,
-      user_name TEXT NOT NULL,
-      job_type TEXT NOT NULL,
+      company_name TEXT,
+      user_name TEXT,
+      job_type TEXT,
       position TEXT,
       hourly_rate INTEGER,
       work_hours INTEGER,

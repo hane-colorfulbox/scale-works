@@ -931,7 +931,36 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
+}
+
+.roi-saving {
+  grid-column: 1 / -1;
+  background: var(--success-light);
+  border: 1px solid var(--success);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.roi-saving-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.roi-saving-label {
+  font-size: 14px;
+  color: var(--gray-700);
+  font-weight: 600;
+}
+
+.roi-saving-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--success);
 }
 
 .roi-card {
@@ -961,6 +990,76 @@ body {
 .roi-unit {
   font-size: 14px;
   font-weight: 400;
+}
+
+/* --- Breakdown (Step 4) --- */
+.breakdown-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin-bottom: 12px;
+}
+
+.breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.breakdown-item {
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
+  animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.breakdown-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--gray-800);
+  margin-bottom: 6px;
+}
+
+.breakdown-detail {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.breakdown-current {
+  color: var(--gray-500);
+}
+
+.breakdown-arrow {
+  color: var(--gray-400);
+}
+
+.breakdown-saved {
+  color: var(--success);
+  font-weight: 600;
+}
+
+.breakdown-cost {
+  color: var(--success);
+  font-size: 12px;
+}
+
+.breakdown-bar-bg {
+  height: 6px;
+  background: var(--gray-100);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.breakdown-bar-fill {
+  height: 100%;
+  background: var(--success);
+  border-radius: 3px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .proposal-cards {
@@ -1067,7 +1166,36 @@ body {
 .cta-text {
   font-size: 15px;
   color: var(--gray-700);
+  margin-bottom: 8px;
+}
+
+.cta-sub {
+  font-size: 13px;
+  color: var(--gray-500);
   margin-bottom: 20px;
+}
+
+.cta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.cta-email {
+  text-align: center;
+}
+
+.cta-success {
+  animation: fadeSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cta-success-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--success);
+  margin-bottom: 16px;
 }
 
 .btn-cta {
@@ -1157,6 +1285,20 @@ body {
 
   .roi-value {
     font-size: 24px;
+  }
+
+  .roi-saving-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .roi-saving-value {
+    font-size: 18px;
+  }
+
+  .breakdown-detail {
+    flex-wrap: wrap;
   }
 
   .proposal-metrics {
