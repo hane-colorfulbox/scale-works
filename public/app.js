@@ -371,19 +371,11 @@ async function submitAnalysis(analysisResult) {
   }
 }
 
-/* --- Email + Booking --- */
-async function submitEmailAndBook() {
-  const emailInput = $("ctaEmail");
-  const email = emailInput.value.trim();
-  if (!email || !email.includes("@")) {
-    emailInput.focus();
-    emailInput.style.borderColor = "#ef4444";
-    return;
-  }
-
-  const btn = $("ctaSubmitBtn");
+/* --- Download PDF + Open Booking --- */
+async function downloadAndBook() {
+  const btn = $("ctaBookBtn");
   btn.disabled = true;
-  btn.textContent = "送信中...";
+  btn.textContent = "レポート生成中...";
 
   const activeTasks = state.tasks.filter((t) => t.enabled && t.hours > 0);
   const totalHours = activeTasks.reduce((sum, t) => sum + t.hours, 0);
@@ -396,11 +388,10 @@ async function submitEmailAndBook() {
   const annualSaving = monthlySaving * 12;
 
   try {
-    const res = await fetch("/api/report/send-direct", {
+    const res = await fetch("/api/report/download-direct", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        to: email,
         hourlyRate: state.hourlyRate,
         tasks: activeTasks,
         analysis: {
@@ -414,20 +405,27 @@ async function submitEmailAndBook() {
       }),
     });
 
-    const data = await res.json();
+    if (res.ok) {
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "業務分析レポート.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
 
-    if (data.success) {
-      btn.textContent = "レポートを送信しました！予約ページへ移動します...";
+      btn.textContent = "予約ページを開いています...";
       setTimeout(() => {
         window.open(BOOKING_URL, "_blank");
+        btn.disabled = false;
+        btn.textContent = "分析レポートをダウンロードして無料面談を予約";
       }, 1000);
     } else {
       btn.disabled = false;
-      btn.textContent = "無料面談予約でレポートを受け取る";
-      emailInput.style.borderColor = "#ef4444";
+      btn.textContent = "分析レポートをダウンロードして無料面談を予約";
     }
   } catch (err) {
     btn.disabled = false;
-    btn.textContent = "無料面談予約でレポートを受け取る";
+    btn.textContent = "分析レポートをダウンロードして無料面談を予約";
   }
 }

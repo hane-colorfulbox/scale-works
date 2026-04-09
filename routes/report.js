@@ -77,6 +77,41 @@ router.post("/:id/send", async (req, res) => {
 });
 
 /**
+ * POST /api/report/download-direct
+ * 分析データを受け取り、PDFを生成してダウンロード返却
+ */
+router.post("/download-direct", async (req, res) => {
+  try {
+    const { hourlyRate, tasks, analysis } = req.body;
+    if (!tasks || !analysis) {
+      return res.status(400).json({ error: "分析データが不足しています" });
+    }
+
+    const submission = {
+      company_name: null,
+      user_name: null,
+      job_type: "office",
+      hourly_rate: hourlyRate || 2000,
+      tasks_json: JSON.stringify(tasks),
+      analysis_json: JSON.stringify(analysis),
+      created_at: new Date().toLocaleString("ja-JP"),
+    };
+
+    const pdfFilename = `report_dl_${Date.now()}.pdf`;
+    const pdfPath = path.join(__dirname, "..", "reports", pdfFilename);
+
+    await generateReport(submission, pdfPath);
+
+    res.download(pdfPath, "業務分析レポート.pdf", () => {
+      fs.unlink(pdfPath, () => {});
+    });
+  } catch (err) {
+    console.error("[Report] Download-direct error:", err);
+    res.status(500).json({ error: "レポート生成に失敗しました" });
+  }
+});
+
+/**
  * POST /api/report/send-direct
  * 分析データを直接受け取り、PDF生成→メール送信（DB不要）
  */
