@@ -16,7 +16,6 @@ const DEFAULT_TASKS = [
   { name: "経費精算処理", hours: 0, savePct: 75 },
   { name: "給与計算", hours: 0, savePct: 90 },
   { name: "売掛金・入金確認", hours: 0, savePct: 70 },
-  { name: "受電・電話一次対応", hours: 0, savePct: 90 },
   { name: "メール問い合わせ対応", hours: 0, savePct: 70 },
   { name: "データ入力・整理", hours: 0, savePct: 85 },
   { name: "書類作成・文書管理", hours: 0, savePct: 70 },
@@ -30,7 +29,6 @@ const DEFAULT_TASKS = [
   { name: "受注処理・発注管理", hours: 0, savePct: 75 },
   { name: "SNS投稿・運用管理", hours: 0, savePct: 70 },
   { name: "Webサイト更新・ブログ記事投稿", hours: 0, savePct: 75 },
-  { name: "DM・案内状の発送作業", hours: 0, savePct: 90 },
 ];
 
 
