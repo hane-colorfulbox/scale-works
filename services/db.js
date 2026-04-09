@@ -15,26 +15,60 @@ function getDb() {
 function init() {
   const conn = getDb();
 
-  conn.exec(`
-    CREATE TABLE IF NOT EXISTS submissions (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      company_name TEXT,
-      user_name TEXT,
-      job_type TEXT,
-      position TEXT,
-      hourly_rate INTEGER,
-      work_hours INTEGER,
-      overtime_hours INTEGER,
-      tasks_json TEXT,
-      apo_type TEXT,
-      apo_date TEXT,
-      apo_time TEXT,
-      apo_email TEXT,
-      analysis_json TEXT,
-      pdf_path TEXT,
-      created_at TEXT DEFAULT (datetime('now', 'localtime'))
-    )
-  `);
+  // 古いテーブル（NOT NULL制約あり）が存在する場合は再作成
+  const tableInfo = conn.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='submissions'").get();
+  if (tableInfo) {
+    const cols = conn.prepare("PRAGMA table_info(submissions)").all();
+    const hasNotNull = cols.some((c) => c.name === "company_name" && c.notnull);
+    if (hasNotNull) {
+      console.log("[DB] Migrating: removing NOT NULL constraints...");
+      conn.exec("ALTER TABLE submissions RENAME TO submissions_old");
+      conn.exec(`
+        CREATE TABLE submissions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          company_name TEXT,
+          user_name TEXT,
+          job_type TEXT,
+          position TEXT,
+          hourly_rate INTEGER,
+          work_hours INTEGER,
+          overtime_hours INTEGER,
+          tasks_json TEXT,
+          apo_type TEXT,
+          apo_date TEXT,
+          apo_time TEXT,
+          apo_email TEXT,
+          analysis_json TEXT,
+          pdf_path TEXT,
+          created_at TEXT DEFAULT (datetime('now', 'localtime'))
+        )
+      `);
+      conn.exec("INSERT INTO submissions SELECT * FROM submissions_old");
+      conn.exec("DROP TABLE submissions_old");
+      console.log("[DB] Migration complete.");
+    }
+  } else {
+    conn.exec(`
+      CREATE TABLE submissions (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        company_name TEXT,
+        user_name TEXT,
+        job_type TEXT,
+        position TEXT,
+        hourly_rate INTEGER,
+        work_hours INTEGER,
+        overtime_hours INTEGER,
+        tasks_json TEXT,
+        apo_type TEXT,
+        apo_date TEXT,
+        apo_time TEXT,
+        apo_email TEXT,
+        analysis_json TEXT,
+        pdf_path TEXT,
+        created_at TEXT DEFAULT (datetime('now', 'localtime'))
+      )
+    `);
+  }
 
   console.log("Database initialized");
 }
