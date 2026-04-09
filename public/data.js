@@ -34,11 +34,11 @@ const DEFAULT_TASKS = [
 ];
 
 
-const STEP_LABELS = [
-  "時給入力",
-  "カレンダー連携",
-  "業務確認",
-  "分析結果",
-];
+/* カレンダー連携を有効にする場合は true に変更 */
+const ENABLE_CALENDAR_STEP = false;
 
-const TOTAL_STEPS = 4;
+const STEP_LABELS = ENABLE_CALENDAR_STEP
+  ? ["時給入力", "カレンダー連携", "業務確認", "分析結果"]
+  : ["時給入力", "業務確認", "分析結果"];
+
+const TOTAL_STEPS = STEP_LABELS.length;

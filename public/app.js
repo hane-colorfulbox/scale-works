@@ -45,13 +45,15 @@ function initProgressSteps() {
 
 function updateProgress() {
   const fill = $("progressFill");
-  const pct = (state.currentStep / TOTAL_STEPS) * 100;
+  const seq = getStepSequence();
+  const curIdx = seq.indexOf(state.currentStep);
+  const pct = ((curIdx + 1) / TOTAL_STEPS) * 100;
   fill.style.width = pct + "%";
 
   document.querySelectorAll(".progress-step").forEach((el) => {
     const s = parseInt(el.dataset.pstep);
-    el.classList.toggle("active", s === state.currentStep);
-    el.classList.toggle("done", s < state.currentStep);
+    el.classList.toggle("active", s === curIdx + 1);
+    el.classList.toggle("done", s < curIdx + 1);
   });
 }
 
@@ -72,9 +74,15 @@ function showStep(step) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
+function getStepSequence() {
+  return ENABLE_CALENDAR_STEP ? [1, 2, 3, 4] : [1, 3, 4];
+}
+
 function nextStep() {
-  if (state.currentStep < TOTAL_STEPS) {
-    const next = state.currentStep + 1;
+  const seq = getStepSequence();
+  const curIdx = seq.indexOf(state.currentStep);
+  if (curIdx < seq.length - 1) {
+    const next = seq[curIdx + 1];
     if (next === 3) renderTaskList();
     if (next === 4) renderPreview();
     showStep(next);
@@ -82,8 +90,10 @@ function nextStep() {
 }
 
 function prevStep() {
-  if (state.currentStep > 1) {
-    showStep(state.currentStep - 1);
+  const seq = getStepSequence();
+  const curIdx = seq.indexOf(state.currentStep);
+  if (curIdx > 0) {
+    showStep(seq[curIdx - 1]);
   }
 }
 
