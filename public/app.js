@@ -378,6 +378,9 @@ async function downloadAndBook() {
   btn.disabled = true;
   btn.textContent = "レポート生成中...";
 
+  // 予約ページをユーザー操作の直後に開く（ポップアップブロック回避）
+  window.open(BOOKING_URL, "_blank");
+
   const activeTasks = state.tasks.filter((t) => t.enabled && t.hours > 0);
   const totalHours = activeTasks.reduce((sum, t) => sum + t.hours, 0);
   const monthlyCost = totalHours * state.hourlyRate;
@@ -414,23 +417,11 @@ async function downloadAndBook() {
       a.download = "業務分析レポート.pdf";
       a.click();
       URL.revokeObjectURL(url);
-
-      btn.textContent = "予約ページを開いています...";
-      setTimeout(() => {
-        window.open(BOOKING_URL, "_blank");
-        btn.disabled = false;
-        btn.textContent = "分析レポートをダウンロードして無料面談を予約";
-      }, 1000);
-    } else {
-      // PDF失敗でも予約ページは開く
-      window.open(BOOKING_URL, "_blank");
-      btn.disabled = false;
-      btn.textContent = "分析レポートをダウンロードして無料面談を予約";
     }
   } catch (err) {
-    // エラーでも予約ページは開く
-    window.open(BOOKING_URL, "_blank");
-    btn.disabled = false;
-    btn.textContent = "分析レポートをダウンロードして無料面談を予約";
+    // PDF失敗は無視（予約ページは既に開いている）
   }
+
+  btn.disabled = false;
+  btn.textContent = "分析レポートをダウンロードして無料面談を予約";
 }
