@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSlider();
   initTasks();
   updateProgress();
-  $("bookingLink").href = BOOKING_URL;
+  if ($("bookingLink")) $("bookingLink").href = BOOKING_URL;
 });
 
 /* --- Progress Bar --- */
@@ -422,10 +422,14 @@ async function downloadAndBook() {
         btn.textContent = "分析レポートをダウンロードして無料面談を予約";
       }, 1000);
     } else {
+      // PDF失敗でも予約ページは開く
+      window.open(BOOKING_URL, "_blank");
       btn.disabled = false;
       btn.textContent = "分析レポートをダウンロードして無料面談を予約";
     }
   } catch (err) {
+    // エラーでも予約ページは開く
+    window.open(BOOKING_URL, "_blank");
     btn.disabled = false;
     btn.textContent = "分析レポートをダウンロードして無料面談を予約";
   }

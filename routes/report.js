@@ -97,8 +97,11 @@ router.post("/download-direct", async (req, res) => {
       created_at: new Date().toLocaleString("ja-JP"),
     };
 
+    const reportsDir = path.join(__dirname, "..", "reports");
+    if (!fs.existsSync(reportsDir)) fs.mkdirSync(reportsDir, { recursive: true });
+
     const pdfFilename = `report_dl_${Date.now()}.pdf`;
-    const pdfPath = path.join(__dirname, "..", "reports", pdfFilename);
+    const pdfPath = path.join(reportsDir, pdfFilename);
 
     await generateReport(submission, pdfPath);
 
