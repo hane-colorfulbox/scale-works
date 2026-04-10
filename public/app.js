@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initSlider();
   initTasks();
   updateProgress();
+  $("bookingLink").href = BOOKING_URL;
 });
 
 /* --- Progress Bar --- */

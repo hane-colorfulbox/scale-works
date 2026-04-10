@@ -65,9 +65,20 @@ function init() {
         apo_email TEXT,
         analysis_json TEXT,
         pdf_path TEXT,
+        pdf_sent INTEGER DEFAULT 0,
         created_at TEXT DEFAULT (datetime('now', 'localtime'))
       )
     `);
+  }
+
+  // pdf_sent列がなければ追加
+  if (tableInfo) {
+    const cols = conn.prepare("PRAGMA table_info(submissions)").all();
+    const hasPdfSent = cols.some((c) => c.name === "pdf_sent");
+    if (!hasPdfSent) {
+      conn.exec("ALTER TABLE submissions ADD COLUMN pdf_sent INTEGER DEFAULT 0");
+      console.log("[DB] pdf_sent列を追加");
+    }
   }
 
   console.log("Database initialized");

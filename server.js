@@ -6,6 +6,7 @@ const authRoutes = require("./routes/auth");
 const analysisRoutes = require("./routes/analysis");
 const reportRoutes = require("./routes/report");
 const db = require("./services/db");
+const { startWatcher } = require("./services/booking-watcher");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -40,4 +41,5 @@ db.init();
 
 app.listen(PORT, () => {
   console.log(`Scale Works running on http://localhost:${PORT}`);
+  startWatcher();
 });

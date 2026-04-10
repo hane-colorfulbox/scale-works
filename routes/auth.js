@@ -27,6 +27,9 @@ router.get("/google/callback", async (req, res) => {
     const tokens = await googleService.getTokens(oauth2Client, code);
     req.session.googleTokens = tokens;
 
+    // トークンを永続保存（カレンダー監視用）
+    googleService.saveTokens(tokens);
+
     // カレンダーの前月分データを取得
     const calendarData = await googleService.fetchCalendarEvents(oauth2Client);
     req.session.googleData = { calendar: calendarData };

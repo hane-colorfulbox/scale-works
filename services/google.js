@@ -1,8 +1,12 @@
 const { google } = require("googleapis");
+const fs = require("fs");
+const path = require("path");
 
 const SCOPES = [
   "https://www.googleapis.com/auth/calendar.readonly",
 ];
+
+const TOKEN_PATH = path.join(__dirname, "..", "data", "calendar_token.json");
 
 function createOAuth2Client() {
   return new google.auth.OAuth2(
@@ -10,6 +14,50 @@ function createOAuth2Client() {
     process.env.GOOGLE_CLIENT_SECRET,
     process.env.GOOGLE_REDIRECT_URI
   );
+}
+
+/**
+ * 保存済みトークンを読み込んでOAuth2クライアントを返す
+ */
+function getAuthorizedClient() {
+  if (!fs.existsSync(TOKEN_PATH)) return null;
+  try {
+    const tokens = JSON.parse(fs.readFileSync(TOKEN_PATH, "utf8"));
+    const client = createOAuth2Client();
+    client.setCredentials(tokens);
+    return client;
+  } catch (err) {
+    console.error("[Google] トークン読み込みエラー:", err.message);
+    return null;
+  }
+}
+
+/**
+ * トークンをファイルに永続保存
+ */
+function saveTokens(tokens) {
+  fs.writeFileSync(TOKEN_PATH, JSON.stringify(tokens, null, 2));
+  console.log("[Google] トークン保存完了:", TOKEN_PATH);
+}
+
+/**
+ * 指定期間の新しい予約イベントを取得
+ */
+async function fetchRecentBookings(oauth2Client, sinceMinutes = 10) {
+  const calendar = google.calendar({ version: "v3", auth: oauth2Client });
+  const since = new Date(Date.now() - sinceMinutes * 60 * 1000);
+
+  const res = await calendar.events.list({
+    calendarId: "primary",
+    timeMin: since.toISOString(),
+    maxResults: 50,
+    singleEvents: true,
+    orderBy: "startTime",
+  });
+
+  const events = res.data.items || [];
+  // 予約スケジュールから入ったイベント（attendeesがいるもの）をフィルタ
+  return events.filter((e) => e.attendees && e.attendees.length > 0);
 }
 
 function getAuthUrl(oauth2Client) {
@@ -98,5 +146,8 @@ module.exports = {
   createOAuth2Client,
   getAuthUrl,
   getTokens,
+  getAuthorizedClient,
+  saveTokens,
   fetchCalendarEvents,
+  fetchRecentBookings,
 };
