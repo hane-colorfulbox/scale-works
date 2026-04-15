@@ -8,6 +8,9 @@ const reportRoutes = require("./routes/report");
 const db = require("./services/db");
 const { startWatcher } = require("./services/booking-watcher");
 
+/* --- Keep-alive (Render無料プランのスリープ防止) --- */
+const KEEP_ALIVE_INTERVAL_MS = 10 * 60 * 1000; // 10分
+
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -63,4 +66,14 @@ db.init();
 app.listen(PORT, () => {
   console.log(`Scale Works running on http://localhost:${PORT}`);
   startWatcher();
+
+  // Render無料プランのスリープ防止: 自身のURLに定期pingを送る
+  const externalUrl = process.env.RENDER_EXTERNAL_URL;
+  if (externalUrl) {
+    const http = externalUrl.startsWith("https") ? require("https") : require("http");
+    setInterval(() => {
+      http.get(`${externalUrl}/health`, () => {}).on("error", () => {});
+    }, KEEP_ALIVE_INTERVAL_MS);
+    console.log(`Keep-alive enabled: pinging ${externalUrl}/health every 10min`);
+  }
 });
