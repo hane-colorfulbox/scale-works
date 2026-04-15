@@ -7,8 +7,11 @@ const HOURLY_RATE_MIN = 1000;
 const HOURLY_RATE_MAX = 5000;
 const HOURLY_RATE_STEP = 100;
 
-/* 熊谷さんのGoogle Calendar予約ページ（サーバー側でリダイレクト） */
-const BOOKING_URL = "/booking";
+/* APIサーバー（Render） — ローカル開発時は空文字で相対パス */
+const API_BASE = location.hostname === "localhost" ? "" : "https://scale-works.onrender.com";
+
+/* 予約ページ */
+const BOOKING_URL = "https://calendar.app.google/f59vWzhnujfiTPTM8";
 
 const DEFAULT_TASKS = [
   { name: "請求書・見積書の作成・発行", hours: 0, savePct: 80 },

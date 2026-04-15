@@ -11,6 +11,24 @@ const { startWatcher } = require("./services/booking-watcher");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// --- CORS (Cloudflare Pages からのAPI呼び出しを許可) ---
+const ALLOWED_ORIGINS = [
+  process.env.FRONTEND_URL,           // 本番: CF Pages URL
+  "http://localhost:3000",             // ローカル開発
+  "http://localhost:5173",
+].filter(Boolean);
+
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (ALLOWED_ORIGINS.includes(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  }
+  if (req.method === "OPTIONS") return res.sendStatus(204);
+  next();
+});
+
 // --- Middleware ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -28,6 +46,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use("/auth", authRoutes);
 app.use("/api/analysis", analysisRoutes);
 app.use("/api/report", reportRoutes);
+
+// --- ヘルスチェック (pre-warm用) ---
+app.get("/health", (_req, res) => res.send("ok"));
 
 // --- 予約リダイレクト ---
 app.get("/booking", (req, res) => {

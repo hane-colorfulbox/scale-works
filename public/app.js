@@ -34,6 +34,11 @@ document.addEventListener("DOMContentLoaded", () => {
   initTasks();
   updateProgress();
   if ($("bookingLink")) $("bookingLink").href = BOOKING_URL;
+
+  // APIサーバーのpre-warm（Renderスリープ解除）
+  if (API_BASE) {
+    fetch(`${API_BASE}/health`).catch(() => {});
+  }
 });
 
 /* --- Progress Bar --- */
@@ -360,7 +365,7 @@ async function submitAnalysis(analysisResult) {
   };
 
   try {
-    const res = await fetch("/api/analysis/submit", {
+    const res = await fetch(`${API_BASE}/api/analysis/submit`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
@@ -392,7 +397,7 @@ async function downloadAndBook() {
   const annualSaving = monthlySaving * 12;
 
   try {
-    const res = await fetch("/api/report/download-direct", {
+    const res = await fetch(`${API_BASE}/api/report/download-direct`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
